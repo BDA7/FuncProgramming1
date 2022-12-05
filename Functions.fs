@@ -2,6 +2,7 @@ module Functions
 
 open System
 
+// Project Euler 9
 let pythagoreanTriplets top =
     [ for m in 1..top do
           for n in 1 .. m - 1 do
@@ -14,7 +15,7 @@ let multiplyList list = List.fold (*) 1 list
 
 let findTriplet sum =
     pythagoreanTriplets sum
-    |> List.find (fun [ a; b; c ] -> a + b + c = sum)
+    |> List.find (fun x -> x[0] + x[1] + x[2] = sum)
     |> multiplyList
 
 let public recursionFind (sum: int) =
@@ -78,30 +79,26 @@ let private getAsciiValue (chr: char) =
 
 
 let public counterNames =
-    let mutable allCounter = 0
+    let sumArray = ResizeArray<int>()
     let rArray = readArray
 
     for i = 0 to rArray.Length - 1 do
-        let mutable charValueCounter = 0
+        let sumChars = ResizeArray<int>()
 
         let chooseStr =
             rArray[i] |> String.map Char.ToUpper
 
         chooseStr
-        |> Seq.iter (fun x -> charValueCounter <- charValueCounter + getAsciiValue (x))
-
-        charValueCounter <- charValueCounter * i
-        allCounter <- charValueCounter + allCounter
-
-    allCounter
+        |> Seq.iter (fun x -> sumChars.Add (getAsciiValue(x)))
+        let sumChars = sumChars.ToArray() |> Array.sum
+        sumArray.Add (sumChars*i)
+    sumArray.ToArray() |> Array.sum
 
 let private scoreGoal (index: int, stringUsed: String) =
     let summaryChars =
         stringUsed
         |> String.map Char.ToUpper
         |> Seq.sumBy (fun x -> getAsciiValue (x))
-    // |> Seq.map (fun x -> getAsciiValue (x))
-    // |> Seq.sum
 
     (summaryChars * index)
 
