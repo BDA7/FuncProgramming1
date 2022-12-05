@@ -126,7 +126,7 @@ let public counterNames =
             rArray[i] |> String.map Char.ToUpper
 
         chooseStr
-        |> Seq.iter (fun x -> sumChars.Add (getAsciiValue(x)))
+        |> Seq.iter (getAsciiValue >> sumChars.Add)
         let sumChars = sumChars.ToArray() |> Array.sum
         sumArray.Add (sumChars*i)
     sumArray.ToArray() |> Array.sum
