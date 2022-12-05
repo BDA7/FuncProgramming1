@@ -15,7 +15,7 @@
 Первая функция pythagorean_triplets использует формулу Евклида для перечисления всех возможных питагоровых троек до заданного порога. Формулу можно резюмировать следующим образом:
 а =m^2−n^2, б = 2 m*n , с =m^2+n^2. multiply_list это просто удобная функция для умножения всех элементов списка вместе. find_triplet_with_sum выполняет тяжелую работу по созданию фактических троек, выбирая первую, где сумма равна заданному значению.
 ```F#
-     let pythagorean_triplets top =
+let pythagoreanTriplets top =
     [ for m in 1..top do
           for n in 1 .. m - 1 do
               let a = m * m - n * n
@@ -23,13 +23,12 @@
               let c = m * m + n * n
               yield [ a; b; c ] ]
 
-let multiply_list list =
-    List.fold (fun acc elem -> acc * elem) 1 list
+let multiplyList list = List.fold (*) 1 list
 
-let find_triplet_with_sum sum =
-    pythagorean_triplets sum
-    |> List.find (fun [ a; b; c ] -> a + b + c = sum)
-    |> multiply_list
+let findTriplet sum =
+    pythagoreanTriplets sum
+    |> List.find (fun x -> x[0] + x[1] + x[2] = sum)
+    |> multiplyList
 ```
 ### Ответ: 31875000
 <b>Реализация с помощью хвостовой рекурсии:
@@ -75,12 +74,13 @@ let find_triplet_with_sum sum =
 ### Условие:
 <b>НВ файле есть список имен, его надо отсортировать и посчитать name score, name score вычисляется позиция*вес символов, вес символов это положение каждой буквы в алфавите, а потом их сумма, выходит вес всего слова, нам нужно найти name score сумму для всех.
 ### Описание решения:
-<b>Для начала надо было считать из файла все имена и преобразовать их в массив дабы удобнее было работать с ними, для этого сначала я считал из файла все имена в виде строки и далее с помощью разделителя я их преобразовал в массив string
+<b>Для начала надо было считать из файла все имена и преобразовать их в массив дабы удобнее было работать с ними, для этого сначала я считал из файла все имена в виде строки и далее с помощью разделителя я их преобразовал в массив string и отсортировал его
 ```F#
-  let readArray =
-        let text = IO.File.ReadAllText "/Users/aleksandr/Downloads/names.txt"
-        let words = text.Split(',')
-        (words)
+let private readArray =
+    let text =
+        IO.File.ReadAllText(__SOURCE_DIRECTORY__ + @"/" + "names.txt")
+    let words = text.Split(',') |> Array.sort
+    words
 ```
 <b>Далее я составил функцию для возвращения веса символа
 ```F#
@@ -113,22 +113,23 @@ let find_triplet_with_sum sum =
         elif chr = 'Z' then 26
         else 0
 ```
-<b>Потом я воспользовался встроенной сортировкой дабы массив был в алфавитном порядке и объявил общий каунтер для суммы всех name scores
-```F#
-  let public counterNames =
-        let mutable allCounter = 0
-        let rArray = readArray
-        let sortArr = Array.sort rArray
-```
 <b>Теперь для подсчета name score, я пошел по массиву внутри цикла я объявил каунтер для выбранного имени, использовал UPPERCASE, чтобы не было казусов с типом букв и далее разбил имя на chars и каждый char закидывал в функцию выше, потом суммировал все возвращенные значения и далее этот результат умножал на позицию имени, которую можно узнать просто по аргументу цикла i, впоследствии суммировал с allCounter наш name score, хоть и данное решение не соотвествует критериям ФП(тк используются мутабельные типы), но не представить его не могу.
 ```F#
-  for i = 0 to sortArr.Length-1 do
-            let mutable charValueCounter = 0
-            let chooseStr = sortArr.[i].ToUpper()
-            chooseStr |> Seq.iter (fun x-> charValueCounter <- charValueCounter + getAsciiValue(x))
-            charValueCounter <- charValueCounter*i
-            allCounter <- charValueCounter + allCounter
-        printfn "%i" allCounter
+let public counterNames =
+    let sumArray = ResizeArray<int>()
+    let rArray = readArray
+
+    for i = 0 to rArray.Length - 1 do
+        let sumChars = ResizeArray<int>()
+
+        let chooseStr =
+            rArray[i] |> String.map Char.ToUpper
+
+        chooseStr
+        |> Seq.iter (fun x -> sumChars.Add (getAsciiValue(x)))
+        let sumChars = sumChars.ToArray() |> Array.sum
+        sumArray.Add (sumChars*i)
+    sumArray.ToArray() |> Array.sum
 ```
 ### Ответ: 870873746
 <b>Реализация с помощью рекурсии:

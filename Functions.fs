@@ -43,7 +43,6 @@ let public recursionFind (sum: int) =
 let private readArray =
     let text =
         IO.File.ReadAllText(__SOURCE_DIRECTORY__ + @"/" + "names.txt")
-
     let words = text.Split(',') |> Array.sort
     words
 
