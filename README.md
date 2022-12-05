@@ -12,8 +12,8 @@
 ### Условие:
 <b>Найти пифагорейский триплет 1000 и произведение abc
 ### Описание решения:
-Первая функция pythagorean_tripletsиспользует формулу Евклида для перечисления всех возможных питагоровых троек до заданного порога. Формулу можно резюмировать следующим образом:
-а =m^2−n^2, б = 2 m*n , с =m^2+n^2. multiply_listэто просто удобная функция для умножения всех элементов списка вместе. find_triplet_with_sumвыполняет тяжелую работу по созданию фактических троек, выбирая первую, где сумма равна заданному значению.
+Первая функция pythagorean_triplets использует формулу Евклида для перечисления всех возможных питагоровых троек до заданного порога. Формулу можно резюмировать следующим образом:
+а =m^2−n^2, б = 2 m*n , с =m^2+n^2. multiply_list это просто удобная функция для умножения всех элементов списка вместе. find_triplet_with_sum выполняет тяжелую работу по созданию фактических троек, выбирая первую, где сумма равна заданному значению.
 ```F#
      let pythagorean_triplets top =
     [ for m in 1..top do
@@ -32,22 +32,27 @@ let find_triplet_with_sum sum =
     |> multiply_list
 ```
 ### Ответ: 31875000
-<b>Реализация с помощью рекурсии:
+<b>Реализация с помощью хвостовой рекурсии:
   ```F#
-  let rec_find (sum: int) =
-        let rec find_a (a: int, sum: int) =
-                let rec find_b (b: int, sum: int) =
-                        let c: int = sum - a - b
-                        if (float(a) ** 2.0 + float(b) ** 2.0) = float(c) ** 2.0 then (a*b*c)
-                        else
-                                if (b<0) then 0
-                                else find_b(b-1, sum)
-                let result_b = find_b(sum-a, sum)
-                if (result_b > 0) then (result_b)
-                else
-                        if (a<0) then 0
-                        else find_a(a-1, sum)
-        (find_a(sum-1, sum))
+  let public recursionFind (sum: int) =
+    let rec findA (a: int, sum: int) =
+        let rec findB (b: int, sum: int) =
+            let c: int = sum - a - b
+
+            if (float (a) ** 2.0 + float (b) ** 2.0) = float (c) ** 2.0 then
+                (a * b * c)
+            else if (b < 0) then
+                0
+            else
+                findB (b - 1, sum)
+
+        let resultForB = findB (sum - a, sum)
+
+        if (resultForB > 0) then resultForB
+        else if (a < 0) then 0
+        else findA (a - 1, sum)
+
+    findA (sum - 1, sum)
   ```
 ### Ответ: 31875000
 
@@ -115,7 +120,7 @@ let find_triplet_with_sum sum =
         let rArray = readArray
         let sortArr = Array.sort rArray
 ```
-<b>Теперь для подсчета name score, я пошел по массиву внутри цикла я объявил каунтер для выбранного имени, использовал UPPERCASE, чтобы не было казусов с типом букв и далее разбил имя на chars и каждый char закидывал в функцию выше, потом суммировал все возвращенные значения и далее этот результат умножал на позицию имени, которую можно узнать просто по аргументу цикла i, впоследствии суммировал с allCounter наш name score
+<b>Теперь для подсчета name score, я пошел по массиву внутри цикла я объявил каунтер для выбранного имени, использовал UPPERCASE, чтобы не было казусов с типом букв и далее разбил имя на chars и каждый char закидывал в функцию выше, потом суммировал все возвращенные значения и далее этот результат умножал на позицию имени, которую можно узнать просто по аргументу цикла i, впоследствии суммировал с allCounter наш name score, хоть и данное решение не соотвествует критериям ФП(тк используются мутабельные типы), но не представить его не могу.
 ```F#
   for i = 0 to sortArr.Length-1 do
             let mutable charValueCounter = 0
